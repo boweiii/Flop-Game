@@ -1,11 +1,13 @@
 #cards {
   display: flex;
+  flex-wrap: wrap;
 }
 .card {
   /* 卡片在容器中的牌版 */
   flex: 7% 0 1;
   height: 8vw;
   border: 2px solid black;
+  margin: 2px;
   /* 卡片內部元素排版 */
   display: flex;
   flex-direction: column;

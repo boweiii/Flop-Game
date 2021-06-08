@@ -9,7 +9,7 @@ const view = {
   // 因為Key跟Value同名子所以把 displayCards: function displayCards() { ...  }改寫如下
   displayCards() {
     const rootElement = document.querySelector('#cards')
-    rootElement.innerHTML = this.getCardElement(0)
+    rootElement.innerHTML = Array.from(Array(52).keys()).map(index => this.getCardElement(index)).join('')
   },
   getCardElement(index) {
     const number = this.transformNumber((index % 13) + 1) //將特定字符用transformNumber過濾替換為英文字母
