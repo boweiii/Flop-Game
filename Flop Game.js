@@ -8,11 +8,22 @@ const Symbols = [
 const view = {
   // 因為Key跟Value同名子所以把 displayCards: function displayCards() { ...  }改寫如下
   displayCards() {
+    const cardList = []
+    const cardListOrigin = Array.from(Array(52).keys()).map(index => this.getCardElement(index))
+    for (let i = 52; i >= 0; i--) {
+      let index = Math.floor(Math.random() * i)
+      console.log(index)
+      let cardOne = cardListOrigin.splice(index, 1)
+      console.log(cardListOrigin.length)
+      console.log(cardOne)
+      cardList.push(cardOne)
+    }
+
     const rootElement = document.querySelector('#cards')
-    rootElement.innerHTML = Array.from(Array(52).keys()).map(index => this.getCardElement(index)).join('')
+    rootElement.innerHTML = cardList.join('')
   },
   getCardElement(index) {
-    const number = this.transformNumber((index % 13) + 1) //將特定字符用transformNumber過濾替換為英文字母
+    const number = view.transformNumber((index % 13) + 1) //將特定字符用transformNumber過濾替換為英文字母
     const symbol = Symbols[Math.floor(index / 13)]
     return `
     <div class="card">
