@@ -1,0 +1,24 @@
+#cards {
+  display: flex;
+}
+.card {
+  /* 卡片在容器中的牌版 */
+  flex: 7% 0 1;
+  height: 8vw;
+  border: 2px solid black;
+  /* 卡片內部元素排版 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.card img {
+  max-width: 30%;
+  align-self: center;
+}
+.card p {
+  margin: 3px;
+  font-size: 10px;
+}
+.card p:last-child {
+  transform: rotate(180deg);
+}
