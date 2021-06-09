@@ -12,17 +12,21 @@ const view = {
     rootElement.innerHTML = utility.getRandomNumberArray(52).map(index => this.getCardElement(index)).join('')
   },
   getCardElement(index) {
+    return `
+    <div data-index=${index} class="card back">
+
+    </div>`
+  },
+  getCardContent(index) {
     const number = this.transformNumber((index % 13) + 1) //將特定字符用transformNumber過濾替換為英文字母
     const symbol = Symbols[Math.floor(index / 13)]
     return `
-    <div class="card">
       <!--左上數字-->
       <p>${number}</p>
       <!-- 中間花色 -->
       <img src=${symbol} alt="">
       <!--右下數字-->
-      <p>${number}</p>
-    </div>`
+      <p>${number}</p>`
   },
 
   // 我的 transformNumber 寫法
@@ -54,6 +58,17 @@ const view = {
       default:
         return number
     }
+  },
+  flipCard(card) {
+    if (card.classList.contains('back')) {
+      // 回傳正面
+      card.classList.remove('back')
+      card.innerHTML = this.getCardContent(Number(card.dataset.index))
+    } else {
+      // 回傳背面
+      card.classList.add('back')
+      card.innerHTML = null
+    }
   }
 }
 
@@ -76,3 +91,8 @@ const utility = {
 
 
 view.displayCards()
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('click', () => {
+    view.flipCard(card)
+  })
+})
