@@ -4,12 +4,19 @@ const Symbols = [
   'https://image.flaticon.com/icons/svg/105/105212.svg', // 方塊
   'https://image.flaticon.com/icons/svg/105/105219.svg' // 梅花
 ]
+const GAME_STATE = {
+  FirstCardAwaits: "FirstCardAwaits",
+  SecondCardAwaits: "SecondCardAwaits",
+  CardsMatchFailed: "CardsMatchFailed",
+  CardsMatched: "CardsMatched",
+  GameFinished: "GameFinished",
+}
 // MVC架構View
 const view = {
   // 因為Key跟Value同名子所以把 displayCards: function displayCards() { ...  }改寫如下
-  displayCards() {
+  displayCards(indexes) {
     const rootElement = document.querySelector('#cards')
-    rootElement.innerHTML = utility.getRandomNumberArray(52).map(index => this.getCardElement(index)).join('')
+    rootElement.innerHTML = indexes.map(index => this.getCardElement(index)).join('')
   },
   getCardElement(index) {
     return `
@@ -75,7 +82,7 @@ const view = {
 const utility = {
   // 洗牌演算法
   getRandomNumberArray(count) {
-    //0~count 的陣列
+    //0~count-1 的陣列
     const number = Array.from(Array(count).keys())
     //由最後一張開始向前迭代 1.第51張 2.第50張...
     for (let index = number.length - 1; index >= 0; index--) {
@@ -88,9 +95,24 @@ const utility = {
   }
 }
 
+// MVC架構Controll
+const controller = {
+  currentState: GAME_STATE.FirstCardAwaits,
+  generateCards() {
+    view.displayCards(utility.getRandomNumberArray(52))
+  }
+}
 
+// MVC架構Model
+const model = {
+  // revealedCards 代表「被翻開的卡片」
+  // revealedCards是一個暫存牌組，使用者每次翻牌時，就先把卡片丟進這個牌組，集滿兩張牌時就要檢查配對有沒有成功，檢查完以後，這個暫存牌組就需要清空
+  revealedCards: []
+}
 
-view.displayCards()
+// 不要讓 controller 以外的內部函式暴露在 global 的區域，一律用controller呼叫
+controller.generateCards()
+
 document.querySelectorAll('.card').forEach(card => {
   card.addEventListener('click', () => {
     view.flipCard(card)
