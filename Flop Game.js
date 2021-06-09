@@ -8,22 +8,11 @@ const Symbols = [
 const view = {
   // 因為Key跟Value同名子所以把 displayCards: function displayCards() { ...  }改寫如下
   displayCards() {
-    const cardList = []
-    const cardListOrigin = Array.from(Array(52).keys()).map(index => this.getCardElement(index))
-    for (let i = 52; i >= 0; i--) {
-      let index = Math.floor(Math.random() * i)
-      console.log(index)
-      let cardOne = cardListOrigin.splice(index, 1)
-      console.log(cardListOrigin.length)
-      console.log(cardOne)
-      cardList.push(cardOne)
-    }
-
     const rootElement = document.querySelector('#cards')
-    rootElement.innerHTML = cardList.join('')
+    rootElement.innerHTML = utility.getRandomNumberArray(52).map(index => this.getCardElement(index)).join('')
   },
   getCardElement(index) {
-    const number = view.transformNumber((index % 13) + 1) //將特定字符用transformNumber過濾替換為英文字母
+    const number = this.transformNumber((index % 13) + 1) //將特定字符用transformNumber過濾替換為英文字母
     const symbol = Symbols[Math.floor(index / 13)]
     return `
     <div class="card">
@@ -67,4 +56,23 @@ const view = {
     }
   }
 }
+
+const utility = {
+  // 洗牌演算法
+  getRandomNumberArray(count) {
+    //0~count 的陣列
+    const number = Array.from(Array(count).keys())
+    //由最後一張開始向前迭代 1.第51張 2.第50張...
+    for (let index = number.length - 1; index >= 0; index--) {
+      // 隨機選出陣列中的一個位置
+      randomIndex = Math.floor(Math.random() * (index + 1));
+      //目前迭代到的卡片跟隨機選到的位置交換(解構賦值)
+      [number[randomIndex], number[index]] = [number[index], number[randomIndex]]
+    }
+    return number
+  }
+}
+
+
+
 view.displayCards()
