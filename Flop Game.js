@@ -97,6 +97,17 @@ const view = {
   //顯示嘗試次數
   renderTriedTimes(times) {
     document.querySelector(".tried").innerHTML = `You've tried: ${times} times`;
+  },
+  // 配對錯誤動畫
+  appendWrongAnimation(...cards) {
+    cards.forEach(card => {
+      card.classList.add('wrong')
+      // 動畫結束後清除className
+      // { once: true } 是要求在事件執行一次之後，就要卸載這個監聽器
+      card.addEventListener('animationend', () => {
+        card.classList.remove('wrong')
+      }, { once: true })
+    })
   }
 }
 
@@ -161,6 +172,7 @@ const controller = {
         } else {
           // 配對失敗
           this.currentState = GAME_STATE.CardsMatchFailed
+          view.appendWrongAnimation(...model.revealedCards)
           setTimeout(this.resetCards, 1000)
         }
         break
@@ -173,7 +185,7 @@ const controller = {
     // 清空revealedCards
     model.revealedCards.length = 0
     // 設定回初始狀態
-    controller.currentState = GAME_STATE.FirstCardAwaits //這裡不能用this,this 的對象變成了 setTimeout, 所以要用controller
+    controller.currentState = GAME_STATE.FirstCardAwaits //這裡不能用this.currentState,this 的對象變成了 setTimeout, 所以要用controller
   }
 }
 

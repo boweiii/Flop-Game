@@ -62,3 +62,20 @@
 #header .tried {
   margin-top: 0;
 }
+
+/* 配對失敗動畫 */
+.wrong {
+  /* 動畫要持續 0.2 秒 */
+  animation: wrongAnimation 0.2s;
+  /* 動畫要重覆 5 次 */
+  animation-iteration-count: 5;
+}
+/* 關鍵影格 */
+/* 可以用 from 和 to 來指定動畫漸變起點/終點 */
+@keyframes wrongAnimation {
+  0% {
+  }
+  to {
+    border: 2px solid #f1c232;
+  }
+}
