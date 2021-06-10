@@ -108,6 +108,18 @@ const view = {
         card.classList.remove('wrong')
       }, { once: true })
     })
+  },
+  // 遊戲結束畫面
+  showGameFinished() {
+    const div = document.createElement('div')
+    div.classList.add('completed')
+    div.innerHTML = `
+      <p>Complete!</p>
+      <p>Score: ${model.score}</p>
+      <p>You've tried: ${model.triedTimes} times</p>
+    `
+    const header = document.querySelector('#header')
+    header.before(div)
   }
 }
 
@@ -169,6 +181,13 @@ const controller = {
           model.revealedCards.length = 0
           // 設定回初始狀態
           this.currentState = GAME_STATE.FirstCardAwaits
+          // 判斷分數是否滿分260
+          if (model.score === 260) {
+            console.log('showGameFinished')
+            this.currentState = GAME_STATE.GameFinished
+            view.showGameFinished()
+            return
+          }
         } else {
           // 配對失敗
           this.currentState = GAME_STATE.CardsMatchFailed
