@@ -22,7 +22,7 @@
 }
 .card p {
   margin: 3px;
-  font-size: 10px;
+  font-size: 20px;
 }
 .card p:last-child {
   transform: rotate(180deg);
