@@ -4,6 +4,7 @@ const Symbols = [
   'https://image.flaticon.com/icons/svg/105/105212.svg', // 方塊
   'https://image.flaticon.com/icons/svg/105/105219.svg' // 梅花
 ]
+// 遊戲狀態機
 const GAME_STATE = {
   FirstCardAwaits: "FirstCardAwaits",
   SecondCardAwaits: "SecondCardAwaits",
@@ -19,12 +20,14 @@ const view = {
     const rootElement = document.querySelector('#cards')
     rootElement.innerHTML = indexes.map(index => this.getCardElement(index)).join('')
   },
+  // 取得牌外層
   getCardElement(index) {
     return `
     <div data-index=${index} class="card back">
 
     </div>`
   },
+  // 取得牌內部內容
   getCardContent(index) {
     const number = this.transformNumber((index % 13) + 1) //將特定字符用transformNumber過濾替換為英文字母
     const symbol = Symbols[Math.floor(index / 13)]
@@ -67,6 +70,7 @@ const view = {
         return number
     }
   },
+  // 翻牌
   flipCards(...cards) {
     cards.forEach(card => {
       if (card.classList.contains('back')) {
@@ -80,10 +84,19 @@ const view = {
       }
     })
   },
+  // 配對成功加入CSS
   pairCards(...cards) {
     cards.forEach(card => {
       card.classList.add('paired')
     })
+  },
+  //顯示分數
+  renderScore(score) {
+    document.querySelector(".score").innerHTML = `Score: ${score}`;
+  },
+  //顯示嘗試次數
+  renderTriedTimes(times) {
+    document.querySelector(".tried").innerHTML = `You've tried: ${times} times`;
   }
 }
 
@@ -105,10 +118,13 @@ const utility = {
 
 // MVC架構Controll
 const controller = {
+  // 設定初始狀態
   currentState: GAME_STATE.FirstCardAwaits,
+  // 發牌
   generateCards() {
     view.displayCards(utility.getRandomNumberArray(52))
   },
+  // 遊戲流程
   dispatchCardAction(card) {
     if (!card.classList.contains('back')) {
       return
@@ -124,6 +140,8 @@ const controller = {
         break
 
       case GAME_STATE.SecondCardAwaits:
+        // 嘗試次數+1
+        view.renderTriedTimes(model.triedTimes += 1)
         //翻牌
         view.flipCards(card)
         // 將選到的卡片加入 revealedCards
@@ -132,6 +150,8 @@ const controller = {
         console.log(model.isRevealCadrsMatched())
         if (model.isRevealCadrsMatched()) {
           // 配對成功
+          // 分數+10
+          view.renderScore(model.score += 10)
           this.currentState = GAME_STATE.CardsMatched
           view.pairCards(...model.revealedCards)
           // 清空revealedCards
@@ -164,7 +184,11 @@ const model = {
   revealedCards: [],
   isRevealCadrsMatched() {
     return this.revealedCards[0].dataset.index % 13 === this.revealedCards[1].dataset.index % 13
-  }
+  },
+  // 分數
+  score: 0,
+  // 嘗試次數
+  triedTimes: 0
 }
 
 // 不要讓 controller 以外的內部函式暴露在 global 的區域，一律用controller呼叫
