@@ -184,14 +184,18 @@ const controller = {
           // 判斷分數是否滿分260
           if (model.score === 260) {
             console.log('showGameFinished')
+            // 狀態設定為結束
             this.currentState = GAME_STATE.GameFinished
+            // 呼叫結束畫面
             view.showGameFinished()
             return
           }
         } else {
           // 配對失敗
           this.currentState = GAME_STATE.CardsMatchFailed
+          // 配對錯誤動畫
           view.appendWrongAnimation(...model.revealedCards)
+          // 牌在1秒後覆蓋
           setTimeout(this.resetCards, 1000)
         }
         break
@@ -199,6 +203,7 @@ const controller = {
     console.log('this.currentState', this.currentState)
     console.log('revealedCards', model.revealedCards.map(card => card.dataset.index))
   },
+  // 重新覆蓋牌
   resetCards() {
     view.flipCards(...model.revealedCards)
     // 清空revealedCards
