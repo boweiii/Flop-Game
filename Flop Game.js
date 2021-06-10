@@ -15,6 +15,7 @@ const GAME_STATE = {
 const view = {
   // 因為Key跟Value同名子所以把 displayCards: function displayCards() { ...  }改寫如下
   displayCards(indexes) {
+    console.log(indexes)
     const rootElement = document.querySelector('#cards')
     rootElement.innerHTML = indexes.map(index => this.getCardElement(index)).join('')
   },
@@ -76,6 +77,9 @@ const view = {
       card.classList.add('back')
       card.innerHTML = null
     }
+  },
+  pairCard(card) {
+    card.classList.add('paired')
   }
 }
 
@@ -100,6 +104,51 @@ const controller = {
   currentState: GAME_STATE.FirstCardAwaits,
   generateCards() {
     view.displayCards(utility.getRandomNumberArray(52))
+  },
+  dispatchCardAction(card) {
+    if (!card.classList.contains('back')) {
+      return
+    }
+    switch (this.currentState) {
+
+      case GAME_STATE.FirstCardAwaits:
+        //翻牌
+        view.flipCard(card)
+        // 將選到的卡片加入 revealedCards
+        model.revealedCards.push(card)
+        this.currentState = GAME_STATE.SecondCardAwaits
+        break
+
+      case GAME_STATE.SecondCardAwaits:
+        //翻牌
+        view.flipCard(card)
+        // 將選到的卡片加入 revealedCards
+        model.revealedCards.push(card)
+        // 判斷配對是否成功
+        console.log(model.isRevealCadrsMatched())
+        if (model.isRevealCadrsMatched()) {
+          // 配對成功
+          this.currentState = GAME_STATE.CardsMatched
+          model.revealedCards.forEach(card => view.pairCard(card))
+          // 清空revealedCards
+          model.revealedCards.length = 0
+          // 設定回初始狀態
+          this.currentState = GAME_STATE.FirstCardAwaits
+        } else {
+          // 配對失敗
+          this.currentState = GAME_STATE.CardsMatchFailed
+          setTimeout(() => {
+            model.revealedCards.forEach(card => view.flipCard(card))
+            // 清空revealedCards
+            model.revealedCards.length = 0
+            // 設定回初始狀態
+            this.currentState = GAME_STATE.FirstCardAwaits
+          }, 1000)
+        }
+        break
+    }
+    console.log('this.currentState', this.currentState)
+    console.log('revealedCards', model.revealedCards.map(card => card.dataset.index))
   }
 }
 
@@ -107,7 +156,10 @@ const controller = {
 const model = {
   // revealedCards 代表「被翻開的卡片」
   // revealedCards是一個暫存牌組，使用者每次翻牌時，就先把卡片丟進這個牌組，集滿兩張牌時就要檢查配對有沒有成功，檢查完以後，這個暫存牌組就需要清空
-  revealedCards: []
+  revealedCards: [],
+  isRevealCadrsMatched() {
+    return this.revealedCards[0].dataset.index % 13 === this.revealedCards[1].dataset.index % 13
+  }
 }
 
 // 不要讓 controller 以外的內部函式暴露在 global 的區域，一律用controller呼叫
@@ -115,6 +167,6 @@ controller.generateCards()
 
 document.querySelectorAll('.card').forEach(card => {
   card.addEventListener('click', () => {
-    view.flipCard(card)
+    controller.dispatchCardAction(card)
   })
 })
