@@ -1,18 +1,21 @@
 #cards {
   display: flex;
   flex-wrap: wrap;
+  width: 85%; /* 新增：寬度和標頭一致 */
+  margin: 0 auto; /* 新增：置中 */
 }
 .card {
   /* 卡片在容器中的牌版 */
-  flex: 7% 0 1;
+  flex: 7% 1 1;
   height: 8vw;
-  border: 2px solid black;
+  border: 2px solid #e0e0e0;
   margin: 2px;
   /* 卡片內部元素排版 */
   display: flex;
   flex-direction: column;
   justify-content: space-around;
 }
+/* 牌正面 */
 .card img {
   max-width: 30%;
   align-self: center;
@@ -24,11 +27,38 @@
 .card p:last-child {
   transform: rotate(180deg);
 }
+/* 牌背 */
 .back {
   background: url("https://assets-lighthouse.alphacamp.co/uploads/image/file/9222/ExportedContentImage_00.png");
   background-size: cover;
 }
-
+/* 配對成功 */
 .paired {
   background-color: #dae0e3;
+}
+/* header */
+#header {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 85%;
+}
+#header .title {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+#header .title img {
+  max-width: 3em;
+}
+#header .title h2 {
+  padding-left: 0.5em;
+}
+#header .score {
+  margin: 0;
+  color: #6c90ac;
+}
+#header .tried {
+  margin-top: 0;
 }
